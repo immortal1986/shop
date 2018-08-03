@@ -29,7 +29,7 @@ class ProductPrices extends Model {
     public $days_to_end;
 
     public function initialize() {
-        $this->hasOne('product_id', 'Products', 'id', [
+        $this->belongsTo('product_id', 'Products', 'id', [
             'foreignKey' => [
                 'message' => 'Product Price cannot be deleted because it\'s used in Products'
             ]

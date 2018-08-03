@@ -73,7 +73,11 @@ class ProductsController extends ControllerBase {
             }
         }
         $this->view->p_id       = $id;
-        $this->view->sales_list = Products::getListSalesPrice($id);
+        $list = Products::getListSalesPrice($id);
+        $this->view->sales_list = $list;
+
+
+        $this->view->end = 'NOW() -> DATE_END';
         if (!$this->request->isPost()) {
 
             $product = Products::findFirstById($id);
@@ -250,23 +254,55 @@ class ProductsController extends ControllerBase {
         );
     }
 
-
     public function salesdeleteAction($id) {
 
-        die("ERRO");
-    }
-    public function sdeleteAction($id) {
-       // $p_sales = ProductPrices::findFirstByProductId($id);
-        //$p_sales->delete();
-      //  if ($p_sales->delete()) {
-            /*return $this->dispatcher->forward(
+        $products_price = ProductPrices::findFirstById($id);
+        if (!$products_price) {
+            $this->flash->error("ProductPrices was not found");
+
+            return $this->dispatcher->forward(
                 [
                     "controller" => "products",
-                    "action"     => "edit",
-                    "params"     => $id,
+                    "action"     => "index",
                 ]
-            );*/
-       // }
+            );
+        }
+
+        if (!$products_price->delete()) {
+            foreach ($products_price->getMessages() as $message) {
+                $this->flash->error($message);
+            }
+
+            return $this->dispatcher->forward(
+                [
+                    "controller" => "products",
+                    "action"     => "search",
+                ]
+            );
+        }
+
+        $this->flash->success("ProductPrices was deleted");
+
+        return $this->dispatcher->forward(
+            [
+                "controller" => "products",
+                "action"     => "index",
+            ]
+        );
+    }
+
+    public function sdeleteAction($id) {
+        // $p_sales = ProductPrices::findFirstByProductId($id);
+        //$p_sales->delete();
+        //  if ($p_sales->delete()) {
+        /*return $this->dispatcher->forward(
+			[
+				"controller" => "products",
+				"action"     => "edit",
+				"params"     => $id,
+			]
+		);*/
+        // }
     }
 
 }

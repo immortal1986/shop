@@ -37,7 +37,7 @@ class IndexController extends ControllerBase {
 
     public function setLanguageAction($language = '') {
         //Change the language, reload translations if needed
-        if ($language == 'en' || $language == 'es') {
+        if ($language == 'en' || $language == 'ru') {
             $this->session->set('language', $language);
             $this->loadMainTrans();
             $this->loadCustomTrans('index');
